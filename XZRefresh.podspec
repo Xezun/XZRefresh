@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
     ss.project_header_files = 'XZRefresh/Code/**/Private/*.h'
   end
   
-  s.subspec 'Debug' do |ss|
+  s.subspec 'DEBUG' do |ss|
     ss.dependency 'XZRefresh/Code'
     ss.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'XZ_DEBUG=1' }
   end

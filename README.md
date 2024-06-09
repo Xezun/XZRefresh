@@ -6,7 +6,7 @@
 
 ## 示例工程 Example
 
-要运行示例工程，请在拉取代码后，先在`Pods`目录下执行`pod install`命令。
+要运行示例工程，请在拉取代码后，先在 `Pods` 目录下执行 `pod install` 命令。
 
 To run the example project, clone the repo, and run `pod install` from the `Pods` directory first.
 
@@ -16,7 +16,7 @@ iOS 12.0, Xcode 14.0
 
 ## 安装使用 Installation
 
-推荐使用[CocoaPods](https://cocoapods.org)安装`XZRefresh`组件。
+推荐使用 [CocoaPods](https://cocoapods.org) 安装 `XZRefresh` 组件。
 
 `XZRefresh` is available through [CocoaPods](https://cocoapods.org). To install it, simply add the following line to your Podfile:
 
@@ -26,28 +26,28 @@ pod 'XZRefresh'
 
 ## 效果展示
 
-XZRefresh内置了两种刷新效果。
+`XZRefresh` 内置了两种刷新效果。
 
 - 下拉刷新默认效果：XZRefreshStyle1View
 
-<img src="./Docs/images/XZRefreshStyle1.gif" width="75" height="50" /> 
+<img src="./Images/refresh-style-1.gif" width="75" height="50" /> 
 
 - 上拉加载默认效果：XZRefreshStyle2View
 
-<img src="./Docs/images/XZRefreshStyle2.gif" width="75" height="50" />
+<img src="./Images/refresh-style-2.gif" width="75" height="50" />
 
 ## 如何使用
 
 ### 创建组件
 
-通过`xz_headerRefreshView`或`xz_footerRefreshView`属性可以设置刷新控件。另外`XZRefresh`提供了默认控件，通过懒加载可自动创建。
+通过 `xz_headerRefreshView` 或 `xz_footerRefreshView` 属性可以设置刷新控件。另外 `XZRefresh` 提供了默认控件，通过懒加载可自动创建。
 
 ```objc
 // 使用默认的刷新控件
 [self.tableView xz_headerRefreshView];
 ```
 
-通过继承`XZRefreshView`可自定义刷新效果，具体可参考`XZRefreshStyle1View`或`XZRefreshStyle2View`。
+通过继承`XZRefreshView`可自定义刷新效果，具体可参考 `XZRefreshStyle1View` 或 `XZRefreshStyle2View` 。
 
 ```objc
 // 使用创建的刷新控件
@@ -56,7 +56,7 @@ self.tableView.xz_headerRefreshView = [[XZRefreshStyle2View alloc] init];
 
 ### 处理事件
 
-默认情况下，`XZRefresh`使用`UIScrollView.delegate`作为代理，实现协议`XZRefreshDelegate`的方法即可处理事件。
+默认情况下，`XZRefresh` 使用 `UIScrollView.delegate` 作为代理，实现协议 `XZRefreshDelegate` 的方法即可处理事件。
 
 ```objc
 // 下拉刷新事件
@@ -71,7 +71,7 @@ self.tableView.xz_headerRefreshView = [[XZRefreshStyle2View alloc] init];
 }
 ```
 
-可以通过`XZRefreshView`的`delegate`属性，指定事件的接收对象。
+可以通过 `XZRefreshView` 的 `delegate` 属性，指定事件的接收对象。
 
 ```objc
 self.tableView.xz_headerRefreshView.delegate = theReceiverObject;
@@ -88,7 +88,7 @@ self.tableView.xz_headerRefreshView.delegate = theReceiverObject;
 
 ### 适配布局
 
-通过`XZRefreshView`的`adjustment`属性，可以设置适配`UIScrollView`边距的方式，支持三种模式：
+通过 `XZRefreshView` 的 `adjustment` 属性，可以设置适配 `UIScrollView` 边距的方式，支持三种模式：
 
 - XZRefreshAdjustmentAutomatic：适配 `UIScrollView.adjustedContentInset` 边距。
 - XZRefreshAdjustmentNormal：适配 `UIScrollView.contentInset` 边距。
@@ -98,18 +98,18 @@ self.tableView.xz_headerRefreshView.delegate = theReceiverObject;
 self.tableView.xz_footerRefreshView.adjustment = XZRefreshAdjustmentNone;
 ```
 
-除适配模式外，还可以通过`offset`属性，来调整刷新视图的位置。
+除适配模式外，还可以通过 `offset` 属性，来调整刷新视图的位置。
 
 ```
 self.tableView.xz_headerRefreshView.offset = 50; // 向上偏移 50 点
 self.tableView.xz_footerRefreshView.offset = 50; // 向下偏移 50 点
 ```
 
-另外，尾部刷新视图，始终布局在`UIScrollView`的尾部，即使在`contentSize.height < bounds.size.height`时也是。
+另外，尾部刷新视图，始终布局在 `UIScrollView` 的尾部，即使在 `contentSize.height < bounds.size.height` 时也是。
 
 ### 自动刷新
 
-通过`automaticRefreshDistance`属性，可以指定触发自动刷新的距离。
+通过 `automaticRefreshDistance` 属性，可以指定触发自动刷新的距离。
 
 ```objc
 // 当页面滚动距离底部 50 时，自动触发底部刷新。
@@ -118,7 +118,7 @@ self.tableView.xz_footerRefreshView.automaticRefreshDistance = 50;
 
 ## 自定义
 
-下拉刷新之后继续下拉进入二级页面，是目前实际应用比较广泛的功能，通过`XZRefresh`自定义刷新控件可以很容易实现该类效果。
+下拉刷新之后继续下拉进入二级页面，是目前实际应用比较广泛的功能，通过 `XZRefresh` 自定义刷新控件可以很容易实现该类效果。
 
 ```objc
 - (void)scrollView:(UIScrollView *)scrollView didScrollRefreshing:(CGFloat)distance {
