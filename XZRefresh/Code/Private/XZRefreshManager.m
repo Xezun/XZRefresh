@@ -6,6 +6,7 @@
 //
 
 #import "XZRefreshManager.h"
+#import "XZRefreshRuntime.h"
 #import "XZRefreshView.h"
 #import "XZRefreshStyle1View.h"
 #import "XZRefreshStyle2View.h"
@@ -34,30 +35,8 @@ UIKIT_STATIC_INLINE UIEdgeInsets XZRefreshAddTop(UIEdgeInsets insets, CGFloat to
     return insets;
 }
 
-/// 给类添加实例方法。
-/// @param aClass 待添加方法的类
-/// @param selector 方法名
-/// @param source 复制方法实现的源
-/// @param selectorForOverride 如果待添加的方法已由目标父类实现，使用此方法的实现重写
-/// @param selectorForExchange 如果待添加的方法已由目标自身实现，使用此方法的实现交换（先将方法添加到目标上）
-/// @param _key 判断是否已经添加方法的标记
-static BOOL XZRefreshAddMethod(Class const aClass, SEL const selector, Class source, SEL const selectorForOverride, SEL const selectorForExchange, const void * const _key);
 
-/// 为运行时，注入原生方法提供实现。
-@interface XZRefreshScrollViewDelegate : NSObject <UIScrollViewDelegate>
-@end
-@interface XZRefreshPlaceholderDelegate : XZRefreshScrollViewDelegate
-- (void)__xz_refresh_exchange_scrollViewDidScroll:(UIScrollView *)scrollView;
-- (void)__xz_refresh_override_scrollViewDidScroll:(UIScrollView *)scrollView;
-- (void)__xz_refresh_override_scrollViewWillBeginDragging:(UIScrollView *)scrollView;
-- (void)__xz_refresh_exchange_scrollViewWillBeginDragging:(UIScrollView *)scrollView;
-- (void)__xz_refresh_override_scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset;
-- (void)__xz_refresh_exchange_scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset;
-- (void)__xz_refresh_override_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
-- (void)__xz_refresh_exchange_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate;
-- (void)__xz_refresh_override_scrollViewDidEndDecelerating:(UIScrollView *)scrollView;
-- (void)__xz_refresh_exchange_scrollViewDidEndDecelerating:(UIScrollView *)scrollView;
-@end
+
 
 // 监听 UIScrollView 代理 delegate 的标记。
 static void const * const _context = &_context;
@@ -133,7 +112,7 @@ static void const * const _context = &_context;
     }
     
     Class  const target = delegate.class;
-    Class  const source = [XZRefreshPlaceholderDelegate class];
+    Class  const source = [XZRefreshRuntime class];
     
     // 监听 scrollViewDidScroll: 方法。
     static const void * const key1 = &key1;
@@ -1015,157 +994,4 @@ static const void * const _manager = &_manager;
 
 @end
 
-
-
-
-
-/// 获取类 aClass 自身的实例方法，不包括从父类继承的方法。
-static Method XZClassGetInstanceMethod(Class const aClass, SEL const selector) {
-    Method method = NULL;
-    
-    unsigned int count = 0;
-    Method *methods = class_copyMethodList(aClass, &count);
-    for (unsigned int i = 0; i < count; i++) {
-        if (method_getName(methods[i]) == selector) {
-            method = methods[i];
-            break;
-        }
-    }
-    free(methods);
-    
-    return method;
-}
-
-static BOOL XZRefreshAddMethod(Class const aClass, SEL const selector, Class source, SEL const selectorForOverride, SEL const selectorForExchange, const void * const _key) {
-    if (objc_getAssociatedObject(aClass, _key)) return NO;
-    
-    // 方法已实现
-    if ([aClass instancesRespondToSelector:selector]) {
-        Method const oldMethod = XZClassGetInstanceMethod(aClass, selector);
-        if (oldMethod == NULL) {
-            // 方法由父类实现，自身未实现，重写方法
-            Method      const mtd = class_getInstanceMethod(source, selectorForOverride);
-            IMP         const imp = method_getImplementation(mtd);
-            const char *const enc = method_getTypeEncoding(mtd);
-            class_addMethod(aClass, selector, imp, enc);
-        } else {
-            // 方法已自身实现，先添加被交换的方法，然后交换实现
-            Method sourceMethod = class_getInstanceMethod(source, selectorForExchange);
-            IMP sourceIMP = method_getImplementation(sourceMethod);
-            if (class_addMethod(aClass, selectorForExchange, sourceIMP, method_getTypeEncoding(sourceMethod))) {
-                Method const newMethod = class_getInstanceMethod(aClass, selectorForExchange);
-                method_exchangeImplementations(oldMethod, newMethod);
-            }
-        }
-    } else {
-        // 方法未实现，添加方法
-        Method       const mtd = class_getInstanceMethod(source, selector);
-        IMP          const imp = method_getImplementation(mtd);
-        const char * const enc = method_getTypeEncoding(mtd);
-        class_addMethod(aClass, selector, imp, enc);
-    }
-    
-    objc_setAssociatedObject(aClass, _key, @(YES), OBJC_ASSOCIATION_COPY_NONATOMIC);
-    return YES;
-}
-
-#pragma mark - ScrollView delegate
-
-@implementation XZRefreshScrollViewDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    
-}
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    
-}
-
-@end
-
-@implementation XZRefreshPlaceholderDelegate
-
-- (void)scrollViewDidScroll:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidScroll:scrollView];
-}
-
-- (void)__xz_refresh_override_scrollViewDidScroll:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidScroll:scrollView];
-    [super scrollViewDidScroll:scrollView];
-}
-
-- (void)__xz_refresh_exchange_scrollViewDidScroll:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidScroll:scrollView];
-    [self __xz_refresh_exchange_scrollViewDidScroll:scrollView];
-}
-
-- (void)scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillBeginDragging:scrollView];
-}
-
-- (void)__xz_refresh_override_scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillBeginDragging:scrollView];
-    [super scrollViewWillBeginDragging:scrollView];
-}
-
-- (void)__xz_refresh_exchange_scrollViewWillBeginDragging:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillBeginDragging:scrollView];
-    [self __xz_refresh_exchange_scrollViewWillBeginDragging:scrollView];
-}
-
-- (void)scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
-}
-
-- (void)__xz_refresh_override_scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
-    [super scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
-}
-
-- (void)__xz_refresh_exchange_scrollViewWillEndDragging:(UIScrollView *)scrollView withVelocity:(CGPoint)velocity targetContentOffset:(inout CGPoint *)targetContentOffset {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
-    [self __xz_refresh_exchange_scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
-}
-
-- (void)scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-}
-
-- (void)__xz_refresh_override_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-    [super scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-}
-
-- (void)__xz_refresh_exchange_scrollViewDidEndDragging:(UIScrollView *)scrollView willDecelerate:(BOOL)decelerate {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-    [self __xz_refresh_exchange_scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
-}
-
-- (void)scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDecelerating:scrollView];
-}
-
-- (void)__xz_refresh_override_scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDecelerating:scrollView];
-    [super scrollViewDidEndDecelerating:scrollView];
-}
-
-- (void)__xz_refresh_exchange_scrollViewDidEndDecelerating:(UIScrollView *)scrollView {
-    [scrollView.xz_refreshManagerIfLoaded scrollViewDidEndDecelerating:scrollView];
-    [self __xz_refresh_exchange_scrollViewDidEndDecelerating:scrollView];
-}
-
-@end
 
