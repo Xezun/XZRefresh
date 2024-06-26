@@ -8,8 +8,8 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XZRefresh'
-  s.version          = '1.0.0'
-  s.summary          = '一款 iOS 下拉刷新、上拉加载组件'
+  s.version          = '1.0.1'
+  s.summary          = '迄今为止 iOS 最流畅的下拉刷新、上拉加载组件'
 
 # This description is used to generate tags and improve search results.
 #   * Think: What does it do? Why did you write it? What is the focus?
@@ -18,7 +18,7 @@ Pod::Spec.new do |s|
 #   * Finally, don't worry about the indent, CocoaPods strips it!
 
   s.description      = <<-DESC
-  XZRefresh 是一款专为 iOS 设计的、支持拓展的下拉刷新、上拉加载组件。
+  XZRefresh 采用了更科学的设计方式，不仅比其它下拉刷新组件更流畅，而且还支持支持拓展，方便开发者完全自定义下拉刷新的样式。
                        DESC
 
   s.homepage         = 'https://github.com/Xezun/XZRefresh'
@@ -38,7 +38,7 @@ Pod::Spec.new do |s|
     ss.project_header_files = 'XZRefresh/Code/**/Private/*.h'
   end
   
-  s.subspec 'Debug' do |ss|
+  s.subspec 'DEBUG' do |ss|
     ss.dependency 'XZRefresh/Code'
     ss.pod_target_xcconfig = { 'GCC_PREPROCESSOR_DEFINITIONS' => 'XZ_DEBUG=1' }
   end

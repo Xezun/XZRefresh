@@ -8,7 +8,7 @@ project '../Example/Example.xcodeproj'
 
 target 'Example' do
 
-  pod 'XZRefresh', :path => '../'
+  pod 'XZRefresh/DEBUG', :path => '../'
 
   pod 'XZShapeView'
   pod 'XZExtensions'
@@ -19,13 +19,10 @@ target 'Example' do
   
   target 'ExampleTests' do
     inherit! :search_paths
-
-    
   end
 
   target 'ExampleUITests' do
     inherit! :search_paths
-
-    
   end
+  
 end
