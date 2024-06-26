@@ -1,8 +1,17 @@
 # XZRefresh
 
+[![CI Status](https://img.shields.io/badge/Build-pass-brightgreen.svg)](https://cocoapods.org/pods/XZRefresh)
 [![Version](https://img.shields.io/cocoapods/v/XZRefresh.svg?style=flat)](https://cocoapods.org/pods/XZRefresh)
 [![License](https://img.shields.io/cocoapods/l/XZRefresh.svg?style=flat)](https://cocoapods.org/pods/XZRefresh)
 [![Platform](https://img.shields.io/cocoapods/p/XZRefresh.svg?style=flat)](https://cocoapods.org/pods/XZRefresh)
+
+迄今为止 iOS 最流畅的下拉刷新、上拉加载组件。
+
+## 设计背景
+
+在实际使用过程中，其它三方下拉刷新组件，在某些极端条件下，总是会有卡顿或交互不畅的情形。在深入研究源代码之后发现造成卡顿的原因，是因为这些组件，都或多或少的都干预了 `UIScrollView` 滚动过程。
+
+所以，在设计时 `XZRefresh` 采用了监听 `UIScrollViewDelegate` 方法，在 `UIScrollView` 滚动流程中，不改变其滚动状态，只监听其变化，从而更新下拉刷新的状态，将对 `UIScrollView` 的滚动影响降到最小。
 
 ## 示例工程 Example
 
