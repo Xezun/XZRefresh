@@ -10,7 +10,7 @@
 #import "UIScrollView+XZRefresh.h"
 #import "XZRefreshDefines.h"
 
-#define XZRefreshStyle1AnimationDuration  3.0
+#define XZRefreshStyle1AnimationDuration  4.0
 #define XZRefreshStyle1TrackColor         [UIColor colorWithWhite:0.90 alpha:1.0]
 
 @implementation XZRefreshStyle1View {
@@ -72,9 +72,10 @@
     // _shapeLayer.duration = 4.0; // 设置了 duration 就不显示 ？？
     [_view.layer addSublayer:_shapeLayer];
     
-    // 路径：弧度为 4 * 2π 的圆弧
+    // 路径：弧度为 5 * 2π 的圆弧
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(15.0, 5.0)];
+    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
@@ -83,7 +84,7 @@
     
     // 初始状态：展示 1 / 4 进度的圆弧，无限小
     _shapeLayer.strokeStart = 0;
-    _shapeLayer.strokeEnd   = 1.0 / 16.0;
+    _shapeLayer.strokeEnd   = 0;
     _trackLayer.transform = CATransform3DMakeScale(0.0, 0.0, 1.0);
     _shapeLayer.transform = CATransform3DMakeScale(0.0, 0.0, 1.0);
 }
@@ -115,34 +116,42 @@
 
 - (void)scrollView:(UIScrollView *)scrollView didScrollRefreshing:(CGFloat)distance {
     // NSLog(@"%s", __PRETTY_FUNCTION__);
-    CGFloat const p = distance / self.height;
     
-    if (p <= 0.5) {
-        // 等待进场：圆弧进度为 0.25，无限小，不可见
+    CGFloat const RefreshHeight = self.height;
+    CGFloat const PullHeight    = RefreshHeight * 1.5; // 进入下拉刷新的高度为刷新高度的 1.5 倍
+    CGFloat const ViewHeight_2  = self.frame.size.height * 0.5;
+    
+    // 大部分情况下，刷新视图位于屏幕外，或者导航条之下，所以在刷新视图漏出一半之前，动画实际是不可见的，
+    // 因此，展示动画的环，从刷新视图漏出一半开始入场。
+    if (distance <= ViewHeight_2) {
+        // 等待进场：圆弧无限小，不可见
         _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = p / 16.0;
+        _shapeLayer.strokeEnd   = 0;
         _trackLayer.transform   = CATransform3DMakeScale(0, 0, 1.0);
         _shapeLayer.transform   = CATransform3DMakeScale(0, 0, 1.0);
-    } else if (p < 1.0) {
-        // 变大进场：圆弧开始增长 0.25 - 1.0，并从无限小变大
-        _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = p / 16.0; // 0.34 * (1.5 - value);
-        _trackLayer.transform   = CATransform3DMakeScale((p - 0.5) * 2.0, (p - 0.5) * 2.0, 1.0);
-        _shapeLayer.transform   = CATransform3DMakeScale((p - 0.5) * 2.0, (p - 0.5) * 2.0, 1.0);
-    } else if (p < 1.5) {
-        // 蓄力刷新：圆弧增长 1.0，大小恢复正常。
-        // 由于线端 cap 的原因，圆弧进度在略小于 1.0 的时候，显示效果就已经为闭合状态，
-        // 因此减 0.2 以保证用户看到圆弧闭合时，松手可以进入刷新状态。
-        _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = MIN(1.0 / 16.0 + (4.0 / 16.0 - 1.0 / 16.0) * (p - 1.0) * 2.0, (4.0 - 0.2) / 16.0);
-        _trackLayer.transform   = CATransform3DIdentity;
-        _shapeLayer.transform   = CATransform3DIdentity;
     } else {
-        // 等待刷新
-        _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = 4.0 / 16.0;
-        _trackLayer.transform   = CATransform3DIdentity;
-        _shapeLayer.transform   = CATransform3DIdentity;
+        CGFloat const transition = (distance - ViewHeight_2) / (PullHeight - ViewHeight_2);
+        if (transition < 0.5) {
+            // 变大进场：圆弧开始增长，并从小变大
+            _shapeLayer.strokeStart = 0;
+            _shapeLayer.strokeEnd   = 3.0 * transition / 15.0; // 0.34 * (1.5 - value);
+            _trackLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
+            _shapeLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
+        } else if (transition < 1.0) {
+            // 蓄力刷新：圆弧增长 1.0，大小恢复正常。
+            // 由于线端 cap 的原因，圆弧进度在略小于 1.0 的时候，显示效果就已经为闭合状态，
+            // 因此减 0.2 以保证在进度未满时，圆弧必须处于未闭合状态，而用户看到闭合的圆环时，松手一定可以进入刷新状态。
+            _shapeLayer.strokeStart = 0;
+            _shapeLayer.strokeEnd   = MIN(transition * 3.0 / 15.0, (3.0 - 0.2) / 15.0);
+            _trackLayer.transform   = CATransform3DIdentity;
+            _shapeLayer.transform   = CATransform3DIdentity;
+        } else {
+            // 等待刷新
+            _shapeLayer.strokeStart = 0;
+            _shapeLayer.strokeEnd   = 3.0 / 15.0;
+            _trackLayer.transform   = CATransform3DIdentity;
+            _shapeLayer.transform   = CATransform3DIdentity;
+        }
     }
 }
 
@@ -167,7 +176,7 @@
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = 4.0 / 16.0;
+        _shapeLayer.strokeEnd   = 3.0 / 15.0;
         [CATransaction commit];
         
         // iOS 16.2: transform 的隐式动画时长不受控制，因此用了 CAAnimation 处理缩放效果。
@@ -186,11 +195,11 @@
     
     CAKeyframeAnimation *an1 = [CAKeyframeAnimation animationWithKeyPath:@"strokeStart"];
     an1.values = @[
-        @(0/16.0), @(4.8/16.0), @(6.0/16.0), @(10.8/16.0), @(12.0/16.0),
+        @(0/15.0), @(3.0/15.0), @(4.0/15.0), @(7.0/15.0), @(8.0/15.0), @(11.0/15.0), @(12.0/15.0),
     ];
     CAKeyframeAnimation *an2 = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
     an2.values = @[
-        @(4.0/16.0), @(5.0/16.0), @(9.8/16.0), @(11.0/16.0), @(15.8/16.0)
+        @(2.8/15.0), @(4.0/15.0), @(6.8/15.0), @(8.0/15.0), @(10.8/15.0), @(12.0/15.0), @(14.8/15.0),
     ];
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
@@ -244,7 +253,7 @@
     [CATransaction begin];
     [CATransaction setDisableActions:YES];
     _shapeLayer.strokeStart = 0;
-    _shapeLayer.strokeEnd   = 1.0 / 16.0;
+    _shapeLayer.strokeEnd   = 0;
     _trackLayer.transform   = CATransform3DMakeScale(0.0, 0.0, 1.0);
     _shapeLayer.transform   = CATransform3DMakeScale(0.0, 0.0, 1.0);
     [CATransaction commit];
