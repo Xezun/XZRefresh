@@ -8,7 +8,7 @@
 #import "AnimationStyle1ViewController.h"
 @import XZShapeView;
 
-#define kAnimationDuration 20.0
+#define kAnimationDuration 10.0
 
 @interface AnimationStyle1ViewController ()
 @property (weak, nonatomic) IBOutlet XZShapeView *shapeView;
@@ -42,11 +42,12 @@
     [path addArcWithCenter:CGPointMake(75.0, 75.0) radius:70.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     [path addArcWithCenter:CGPointMake(75.0, 75.0) radius:70.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     [path addArcWithCenter:CGPointMake(75.0, 75.0) radius:70.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
+    [path addArcWithCenter:CGPointMake(75.0, 75.0) radius:70.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     _shapeLayer.path = path.CGPath;
     
     CAKeyframeAnimation *an1 = [CAKeyframeAnimation animationWithKeyPath:@"strokeStart"];
     an1.values = @[
-        @(0/16.0), @(4.0/12.0), @(8.0/16.0), @(12.0/16.0), @(16.0/16.0),
+        @(0/15.0), @(3.0/15.0), @(4.0/15.0), @(7.0/15.0), @(8.0/15.0), @(11.0/15.0), @(12.0/15.0),
     ];
     an1.duration = kAnimationDuration;
     an1.repeatCount = FLT_MAX;
@@ -55,7 +56,7 @@
 
     CAKeyframeAnimation *an2 = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
     an2.values = @[
-        @(4.0/16.0), @(4.9/16.0), @(6.0/16.0), @(10.9/16.0), @(12.0/16.0)
+        @(2.8/15.0), @(4.0/15.0), @(6.8/15.0), @(8.0/15.0), @(10.8/15.0), @(12.0/15.0), @(14.8/15.0),
     ];
     an2.duration = kAnimationDuration;
     an2.repeatCount = FLT_MAX;
