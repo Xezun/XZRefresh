@@ -193,14 +193,26 @@
         [_shapeLayer addAnimation:animation forKey:@"entering"];
     }
     
+    // 自定义个动画曲线，以实现运动速度平滑过渡：
+    // 运动速度，由于时间是均匀的，根据距离可知，最快速度为 3.0 / 15.0，最慢速度为 1.0 / 15.0，
+    // 所以，3.0 / 15.0 的速度阶段，应该从 1.0 / 15.0 加速，并最后减速到 1.0 / 15.0，
+    // 切线的斜率在或结束时都应该为 1 / 3 ，且在开始收缩或开始拉伸时，加速应该是最快的。
+    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.15 :0.05 :0.7 :0.9];
+    CAMediaTimingFunction *linear = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    
+    // strokeStart 快速时，收缩进度
     CAKeyframeAnimation *an1 = [CAKeyframeAnimation animationWithKeyPath:@"strokeStart"];
     an1.values = @[
         @(0/15.0), @(3.0/15.0), @(4.0/15.0), @(7.0/15.0), @(8.0/15.0), @(11.0/15.0), @(12.0/15.0),
     ];
+    an1.timingFunctions = @[easeio, linear, easeio, linear, easeio, linear];
+    
+    // strokeEnd 快速时，拉伸进度
     CAKeyframeAnimation *an2 = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
     an2.values = @[
         @(2.8/15.0), @(4.0/15.0), @(6.8/15.0), @(8.0/15.0), @(10.8/15.0), @(12.0/15.0), @(14.8/15.0),
     ];
+    an2.timingFunctions = @[linear, easeio, linear, easeio, linear, easeio];
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations  = @[an1, an2];
