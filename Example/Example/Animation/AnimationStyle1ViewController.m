@@ -35,7 +35,10 @@
     
     CAShapeLayer *_shapeLayer = self.shapeView.layer;
     [_shapeLayer removeAllAnimations];
-    
+
+    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.15 :0.05 :0.7 :0.9];
+    CAMediaTimingFunction *linear = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(75, 5)];
     [path addArcWithCenter:CGPointMake(75.0, 75.0) radius:70.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
@@ -49,6 +52,7 @@
     an1.values = @[
         @(0/15.0), @(3.0/15.0), @(4.0/15.0), @(7.0/15.0), @(8.0/15.0), @(11.0/15.0), @(12.0/15.0),
     ];
+    an1.timingFunctions = @[easeio, linear, easeio, linear, easeio, linear];
     an1.duration = kAnimationDuration;
     an1.repeatCount = FLT_MAX;
     an1.removedOnCompletion = NO;
@@ -58,10 +62,26 @@
     an2.values = @[
         @(2.8/15.0), @(4.0/15.0), @(6.8/15.0), @(8.0/15.0), @(10.8/15.0), @(12.0/15.0), @(14.8/15.0),
     ];
+    an2.timingFunctions = @[linear, easeio, linear, easeio, linear, easeio];
     an2.duration = kAnimationDuration;
     an2.repeatCount = FLT_MAX;
     an2.removedOnCompletion = NO;
     [_shapeLayer addAnimation:an2 forKey:@"refreshing.strokeEnd"];
+    
+    CAKeyframeAnimation *an3 = [CAKeyframeAnimation animationWithKeyPath:@"strokeColor"];
+    an3.values = @[
+        (__bridge id)UIColor.redColor.CGColor,
+        (__bridge id)UIColor.blueColor.CGColor,
+        (__bridge id)UIColor.greenColor.CGColor,
+        (__bridge id)UIColor.orangeColor.CGColor,
+        (__bridge id)UIColor.cyanColor.CGColor,
+        (__bridge id)UIColor.purpleColor.CGColor,
+        (__bridge id)UIColor.redColor.CGColor,
+    ];
+    an3.duration = kAnimationDuration;
+    an3.repeatCount = FLT_MAX;
+    an3.removedOnCompletion = NO;
+    [_shapeLayer addAnimation:an3 forKey:@"refreshing.strokeColor"];
 }
 
 @end
