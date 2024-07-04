@@ -10,9 +10,9 @@
 NS_ASSUME_NONNULL_BEGIN
 
 /// 过渡动画所使用的时长 0.35 秒。
-FOUNDATION_EXPORT NSTimeInterval const XZRefreshAnimationDuration;
+FOUNDATION_EXPORT NSTimeInterval const XZRefreshAnimationDuration NS_SWIFT_NAME(animationDuration);
 /// 默认刷新视图的高度 50.0 点。
-FOUNDATION_EXPORT CGFloat        const XZRefreshHeight;
+FOUNDATION_EXPORT CGFloat        const XZRefreshHeight NS_SWIFT_NAME(refreshHeight);
 
 /// XZRefreshView 适配 UIScrollView 边距的方式。
 typedef NS_ENUM(NSUInteger, XZRefreshAdjustment) {
