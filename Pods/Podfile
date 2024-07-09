@@ -8,7 +8,7 @@ project '../Example/Example.xcodeproj'
 
 target 'Example' do
 
-  pod 'XZRefresh/DEBUG', :path => '../'
+  pod 'XZRefresh', :path => '../'
 
   pod 'XZShapeView'
   pod 'XZExtensions'

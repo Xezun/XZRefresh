@@ -22,7 +22,6 @@
 - (void)viewDidLoad {
     [super viewDidLoad];
     
-    NSLog(@"debug");
     _rowHeight = 57.0;
     _numberOfCells = 10;
     
@@ -30,11 +29,6 @@
     self.tableView.xz_headerRefreshView.adjustment = XZRefreshAdjustmentNone;
     self.tableView.xz_footerRefreshView.adjustment = XZRefreshAdjustmentAutomatic;
 }
-
-- (void)headerRefreshing:(XZRefreshView *)refreshView {
-    NSLog(@"headerRefreshing target-action");
-}
-
 
 - (void)scrollView:(__kindof UIScrollView *)scrollView headerDidBeginRefreshing:(XZRefreshView *)refreshView {
     NSLog(@"%s", __PRETTY_FUNCTION__);
