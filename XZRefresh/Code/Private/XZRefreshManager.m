@@ -6,13 +6,14 @@
 //
 
 #import "XZRefreshManager.h"
-#import "XZRefreshRuntime.h"
 #import "XZRefreshView.h"
 #import "XZRefreshStyle1View.h"
 #import "XZRefreshStyle2View.h"
 #import "UIScrollView+XZRefresh.h"
 #import "XZRefreshContext.h"
 #import "XZRefreshDefines.h"
+@import XZDefines;
+@import ObjectiveC;
 
 #define XZRefreshAsync(completion, ...)  if(completion){dispatch_async(dispatch_get_main_queue(),^{completion(__VA_ARGS__);});}
 
@@ -56,10 +57,11 @@ static void const * const _context = &_context;
         _header = [XZRefreshContext headerContextForScrollView:scrollView];
         _footer = [XZRefreshContext footerContextForScrollView:scrollView];
         
+        [self scrollView:scrollView delegateDidChange:scrollView.delegate];
+        
         NSKeyValueObservingOptions const options = NSKeyValueObservingOptionNew | NSKeyValueObservingOptionOld;
         [scrollView addObserver:self forKeyPath:@"delegate" options:options context:(void *)_context];
         [scrollView addObserver:self forKeyPath:@"contentSize" options:options context:(void *)_context];
-        [self scrollView:scrollView delegateDidChange:scrollView.delegate];
     }
     return self;
 }
@@ -111,48 +113,111 @@ static void const * const _context = &_context;
         return;
     }
     
-    Class  const target = delegate.class;
-    Class  const source = [XZRefreshRuntime class];
+    Class const aClass = delegate.class;
     
-    // 监听 scrollViewDidScroll: 方法。
-    static const void * const key1 = &key1;
-    SEL const m10 = @selector(scrollViewDidScroll:);
-    SEL const m11 = @selector(__xz_refresh_override_scrollViewDidScroll:);
-    SEL const m12 = @selector(__xz_refresh_exchange_scrollViewDidScroll:);
-    BOOL const hasExchanged1 = XZRefreshAddMethod(target, m10, source, m11, m12, key1);
+    static void *_isModified = &_isModified;
+    if (objc_getAssociatedObject(aClass, &_isModified)) {
+        return;
+    }
+    objc_setAssociatedObject(aClass, &_isModified, @(true), OBJC_ASSOCIATION_COPY_NONATOMIC);
     
-    // 监听 scrollViewWillEndDragging:withVelocity:targetContentOffset: 方法。
-    static const void * const key2 = &key2;
-    SEL const m20 = @selector(scrollViewWillEndDragging:withVelocity:targetContentOffset:);
-    SEL const m21 = @selector(__xz_refresh_override_scrollViewWillEndDragging:withVelocity:targetContentOffset:);
-    SEL const m22 = @selector(__xz_refresh_exchange_scrollViewWillEndDragging:withVelocity:targetContentOffset:);
-    BOOL const hasExchanged2 = XZRefreshAddMethod(target, m20, source, m21, m22, key2);
-    
-    static const void * const key3 = &key3;
-    SEL const m30 = @selector(scrollViewDidEndDecelerating:);
-    SEL const m31 = @selector(__xz_refresh_override_scrollViewDidEndDecelerating:);
-    SEL const m32 = @selector(__xz_refresh_exchange_scrollViewDidEndDecelerating:);
-    BOOL const hasExchanged3 = XZRefreshAddMethod(target, m30, source, m31, m32, key3);
-    
-    static const void * const key4 = &key4;
-    SEL const m40 = @selector(scrollViewWillBeginDragging:);
-    SEL const m41 = @selector(__xz_refresh_override_scrollViewWillBeginDragging:);
-    SEL const m42 = @selector(__xz_refresh_exchange_scrollViewWillBeginDragging:);
-    BOOL const hasExchanged4 = XZRefreshAddMethod(target, m40, source, m41, m42, key4);
-    
-    static const void * const key5 = &key5;
-    SEL const m50 = @selector(scrollViewDidEndDragging:willDecelerate:);
-    SEL const m51 = @selector(__xz_refresh_override_scrollViewDidEndDragging:willDecelerate:);
-    SEL const m52 = @selector(__xz_refresh_exchange_scrollViewDidEndDragging:willDecelerate:);
-    BOOL const hasExchanged5 = XZRefreshAddMethod(target, m50, source, m51, m52, key5);
+    {
+        SEL          const selector = @selector(scrollViewDidScroll:);
+        const char * const encoding = xz_objc_class_getMethodTypeEncoding(self.class, selector);
+        xz_objc_class_addMethodWithBlock(aClass, selector, encoding, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewDidScroll:scrollView];
+        }, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewDidScroll:scrollView];
+            struct objc_super super = {
+                .receiver = self,
+                .super_class = class_getSuperclass(object_getClass(self))
+            };
+            ((void (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&super, selector, scrollView);
+        }, ^id _Nonnull(SEL  _Nonnull selector) {
+            return ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+                [scrollView.xz_refreshManager scrollViewDidScroll:scrollView];
+                ((void (*)(id<UIScrollViewDelegate>, SEL, id))objc_msgSend)(self, selector, scrollView);
+            };
+        });
+    } {
+        SEL          const selector = @selector(scrollViewWillEndDragging:withVelocity:targetContentOffset:);
+        const char * const encoding = xz_objc_class_getMethodTypeEncoding(self.class, selector);
+        xz_objc_class_addMethodWithBlock(aClass, selector, encoding, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, CGPoint velocity, CGPoint *targetContentOffset) {
+            [scrollView.xz_refreshManager scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
+        }, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, CGPoint velocity, CGPoint *targetContentOffset) {
+            [scrollView.xz_refreshManager scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
+            struct objc_super super = {
+                .receiver = self,
+                .super_class = class_getSuperclass(object_getClass(self))
+            };
+            ((void (*)(struct objc_super *, SEL, id, CGPoint, CGPoint *))objc_msgSendSuper)(&super, selector, scrollView, velocity, targetContentOffset);
+        }, ^id _Nonnull(SEL  _Nonnull selector) {
+            return ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, CGPoint velocity, CGPoint *targetContentOffset) {
+                [scrollView.xz_refreshManager scrollViewWillEndDragging:scrollView withVelocity:velocity targetContentOffset:targetContentOffset];
+                ((void (*)(id<UIScrollViewDelegate>, SEL, id, CGPoint, CGPoint *))objc_msgSend)(self, selector, scrollView, velocity, targetContentOffset);
+            };
+        });
+    } {
+        SEL          const selector = @selector(scrollViewDidEndDecelerating:);
+        const char * const encoding = xz_objc_class_getMethodTypeEncoding(self.class, selector);
+        xz_objc_class_addMethodWithBlock(aClass, selector, encoding, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewDidEndDecelerating:scrollView];
+        }, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewDidEndDecelerating:scrollView];
+            struct objc_super super = {
+                .receiver = self,
+                .super_class = class_getSuperclass(object_getClass(self))
+            };
+            ((void (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&super, selector, scrollView);
+        }, ^id _Nonnull(SEL  _Nonnull selector) {
+            return ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+                [scrollView.xz_refreshManager scrollViewDidEndDecelerating:scrollView];
+                ((void (*)(id<UIScrollViewDelegate>, SEL, id))objc_msgSend)(self, selector, scrollView);
+            };
+        });
+    } {
+        SEL          const selector = @selector(scrollViewWillBeginDragging:);
+        const char * const encoding = xz_objc_class_getMethodTypeEncoding(self.class, selector);
+        xz_objc_class_addMethodWithBlock(aClass, selector, encoding, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewWillBeginDragging:scrollView];
+        }, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+            [scrollView.xz_refreshManager scrollViewWillBeginDragging:scrollView];
+            struct objc_super super = {
+                .receiver = self,
+                .super_class = class_getSuperclass(object_getClass(self))
+            };
+            ((void (*)(struct objc_super *, SEL, id))objc_msgSendSuper)(&super, selector, scrollView);
+        }, ^id _Nonnull(SEL  _Nonnull selector) {
+            return ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView) {
+                [scrollView.xz_refreshManager scrollViewWillBeginDragging:scrollView];
+                ((void (*)(id<UIScrollViewDelegate>, SEL, id))objc_msgSend)(self, selector, scrollView);
+            };
+        });
+    } {
+        SEL          const selector = @selector(scrollViewDidEndDragging:willDecelerate:);
+        const char * const encoding = xz_objc_class_getMethodTypeEncoding(self.class, selector);
+        xz_objc_class_addMethodWithBlock(aClass, selector, encoding, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, BOOL decelerate) {
+            [scrollView.xz_refreshManager scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+        }, ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, BOOL decelerate) {
+            [scrollView.xz_refreshManager scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+            struct objc_super super = {
+                .receiver = self,
+                .super_class = class_getSuperclass(object_getClass(self))
+            };
+            ((void (*)(struct objc_super *, SEL, id, BOOL))objc_msgSendSuper)(&super, selector, scrollView, decelerate);
+        }, ^id _Nonnull(SEL  _Nonnull selector) {
+            return ^(id<UIScrollViewDelegate> self, UIScrollView *scrollView, BOOL decelerate) {
+                [scrollView.xz_refreshManager scrollViewDidEndDragging:scrollView willDecelerate:decelerate];
+                ((void (*)(id<UIScrollViewDelegate>, SEL, id, BOOL))objc_msgSend)(self, selector, scrollView, decelerate);
+            };
+        });
+    }
     
     // UIScrollView 对代理进行了优化，在设置代理时，获取了代理 scrollViewDidScroll: 的方法实现，
     // 发送事件时，直接执行 Method ，为了让动态添加的方法生效，需要重新设置一遍代理。
     // 重复设置 delegate 无效，因为值未改变，UIScrollView 不会重新获取 Method 。
-    if (hasExchanged1 || hasExchanged2 || hasExchanged3 || hasExchanged4 || hasExchanged5) {
-        scrollView.delegate = self;
-        scrollView.delegate = delegate;
-    }
+    scrollView.delegate = self;
+    scrollView.delegate = delegate;
 }
 
 - (void)setHeaderRefreshView:(XZRefreshView *)headerRefreshView {
