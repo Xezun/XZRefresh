@@ -13,9 +13,9 @@ target 'Example' do
   pod 'XZShapeView'
   pod 'XZExtensions'
   
-  pod 'SDWebImage'
-  pod 'YYModel'
-  pod 'AFNetworking'
+  # pod 'SDWebImage'
+  # pod 'YYModel'
+  # pod 'AFNetworking'
   
   target 'ExampleTests' do
     inherit! :search_paths

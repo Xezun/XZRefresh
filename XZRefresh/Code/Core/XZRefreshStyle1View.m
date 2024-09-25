@@ -10,8 +10,15 @@
 #import "UIScrollView+XZRefresh.h"
 #import "XZRefreshDefines.h"
 
-#define XZRefreshStyle1AnimationDuration  4.0
-#define XZRefreshStyle1TrackColor         [UIColor colorWithWhite:0.90 alpha:1.0]
+
+#define AnimationCircle    6.0  // 动画一圈距离
+#define AnimationLength    84.0 // 动画总距离，该值x需满足：x 是 6 的倍数，且 (x - 6) 是 13 倍数
+#define AnimationMin       4.0  // 最小动画距离
+#define AnimationMax       9.0  // 最大动画距离 = 4.0 + 6.0 - 1.0 最大动画距离+最小动画距离 - 1.0
+#define AnimationDuration  21.0
+
+#define kTrackColor         [UIColor colorWithWhite:0.90 alpha:1.0]
+
 
 @implementation XZRefreshStyle1View {
     UIView *_view;
@@ -52,7 +59,7 @@
     _trackLayer = [[CAShapeLayer alloc] init];
     _trackLayer.frame = CGRectMake(0, 0, 30, 30);
     _trackLayer.lineWidth = 3.0;
-    _trackLayer.strokeColor = XZRefreshStyle1TrackColor.CGColor;
+    _trackLayer.strokeColor = kTrackColor.CGColor;
     _trackLayer.fillColor   = UIColor.clearColor.CGColor;
     _trackLayer.strokeStart = 0;
     _trackLayer.strokeEnd   = 1.0;
@@ -72,14 +79,11 @@
     // _shapeLayer.duration = 4.0; // 设置了 duration 就不显示 ？？
     [_view.layer addSublayer:_shapeLayer];
     
-    // 路径：弧度为 5 * 2π 的圆弧
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(15.0, 5.0)];
-    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
-    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
-    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
-    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
-    [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
+    for (NSInteger i = 0; i < AnimationLength / AnimationCircle; i++) {
+        [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
+    }
     _shapeLayer.path = path.CGPath;
     
     // 初始状态：展示 1 / 4 进度的圆弧，无限小
@@ -106,7 +110,7 @@
 }
 
 - (UIColor *)trackColor {
-    return _trackColor ?: XZRefreshStyle1TrackColor;
+    return _trackColor ?: kTrackColor;
 }
 
 - (void)setTrackColor:(UIColor *)trackColor {
@@ -134,21 +138,22 @@
         if (transition < 0.5) {
             // 变大进场：圆弧开始增长，并从小变大
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = 3.0 * transition / 15.0; // 0.34 * (1.5 - value);
+            _shapeLayer.strokeEnd   = transition * AnimationCircle / AnimationLength;
             _trackLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
             _shapeLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
         } else if (transition < 1.0) {
             // 蓄力刷新：圆弧增长 1.0，大小恢复正常。
             // 由于线端 cap 的原因，圆弧进度在略小于 1.0 的时候，显示效果就已经为闭合状态，
             // 因此减 0.2 以保证在进度未满时，圆弧必须处于未闭合状态，而用户看到闭合的圆环时，松手一定可以进入刷新状态。
+            CGFloat const circle = AnimationCircle / AnimationLength;
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = MIN(transition * 3.0 / 15.0, (3.0 - 0.2) / 15.0);
+            _shapeLayer.strokeEnd   = MIN(transition, 58.0/60.0) * circle;
             _trackLayer.transform   = CATransform3DIdentity;
             _shapeLayer.transform   = CATransform3DIdentity;
         } else {
             // 等待刷新
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = 3.0 / 15.0;
+            _shapeLayer.strokeEnd   = AnimationCircle / AnimationLength;
             _trackLayer.transform   = CATransform3DIdentity;
             _shapeLayer.transform   = CATransform3DIdentity;
         }
@@ -176,7 +181,7 @@
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = 3.0 / 15.0;
+        _shapeLayer.strokeEnd   = AnimationCircle / AnimationLength;
         [CATransaction commit];
         
         // iOS 16.2: transform 的隐式动画时长不受控制，因此用了 CAAnimation 处理缩放效果。
@@ -193,31 +198,36 @@
         [_shapeLayer addAnimation:animation forKey:@"entering"];
     }
     
-    // 自定义个动画曲线，以实现运动速度平滑过渡：
-    // 运动速度，由于时间是均匀的，根据距离可知，最快速度为 3.0 / 15.0，最慢速度为 1.0 / 15.0，
-    // 所以，3.0 / 15.0 的速度阶段，应该从 1.0 / 15.0 加速，并最后减速到 1.0 / 15.0，
-    // 切线的斜率在或结束时都应该为 1 / 3 ，且在开始收缩或开始拉伸时，加速应该是最快的。
-    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.15 :0.05 :0.7 :0.9];
+    // 自定义个动画曲线，以实现运动速度平滑过渡。
+    // 1、动画曲线斜率 y/x 即表示速度。
+    // 2、根据运动距离，最快速度为 AnimationMax，最慢速度为 AnimationMin。
+    // 距离=AnimationMin的动画，保持匀速；
+    // 距离=AnimationMax的动画，以最快速度的AnimationMin / AnimationMax缓入缓出
+    CGFloat const control = 0.5 * AnimationMin / AnimationMax;
+    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.5 :control :0.5 :(1.0 - control)];
     CAMediaTimingFunction *linear = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
+    
+    CGFloat const N = AnimationLength;
+    CGFloat const X = 0.3;
     
     // strokeStart 快速时，收缩进度
     CAKeyframeAnimation *an1 = [CAKeyframeAnimation animationWithKeyPath:@"strokeStart"];
     an1.values = @[
-        @(0/15.0), @(3.0/15.0), @(4.0/15.0), @(7.0/15.0), @(8.0/15.0), @(11.0/15.0), @(12.0/15.0),
+        @(0/N), @(9.0/N), @(13.0/N), @(22.0/N), @(26.0/N), @(35.0/N), @(39.0/N), @(48.0/N), @(52.0/N), @(61.0/N), @(65.0/N), @(74.0/N), @(78.0/N)
     ];
-    an1.timingFunctions = @[easeio, linear, easeio, linear, easeio, linear];
+    an1.timingFunctions = @[easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear];
     
     // strokeEnd 快速时，拉伸进度
     CAKeyframeAnimation *an2 = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
     an2.values = @[
-        @(2.8/15.0), @(4.0/15.0), @(6.8/15.0), @(8.0/15.0), @(10.8/15.0), @(12.0/15.0), @(14.8/15.0),
+        @((6.0 - X)/N), @(10.0/N), @((19 - X)/N), @(23.0/N), @((32.0 - X)/N), @(36.0/N), @((45.0 - X)/N), @(49.0/N), @((58.0 - X)/N), @(62.0/N), @((71.0 - X)/N), @(75.0/N), @((84.0 - X)/N)
     ];
-    an2.timingFunctions = @[linear, easeio, linear, easeio, linear, easeio];
+    an2.timingFunctions = @[linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio];
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations  = @[an1, an2];
     group.beginTime   = beginTime;
-    group.duration    = XZRefreshStyle1AnimationDuration;
+    group.duration    = AnimationDuration;
     group.repeatCount = FLT_MAX;
     group.removedOnCompletion = NO;
     [_shapeLayer addAnimation:group forKey:@"refreshing"];
