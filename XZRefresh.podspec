@@ -8,7 +8,7 @@
 
 Pod::Spec.new do |s|
   s.name             = 'XZRefresh'
-  s.version          = '1.0.6'
+  s.version          = '1.0.7'
   s.summary          = '迄今为止 iOS 最流畅的下拉刷新、上拉加载组件'
 
 # This description is used to generate tags and improve search results.
@@ -36,7 +36,7 @@ Pod::Spec.new do |s|
   s.subspec 'Code' do |ss|
     ss.source_files = 'XZRefresh/Code/**/*.{h,m}'
     ss.project_header_files = 'XZRefresh/Code/**/Private/*.h'
-    ss.dependency 'XZDefines/XZRuntime', "~> 1.2.0"
+    ss.dependency 'XZDefines/XZRuntime'
   end
   
   s.subspec 'DEBUG' do |ss|
