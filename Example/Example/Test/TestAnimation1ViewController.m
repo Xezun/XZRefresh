@@ -1,20 +1,20 @@
 //
-//  AnimationStyle1ViewController.m
+//  TestAnimation1ViewController.m
 //  Example
 //
-//  Created by 徐臻 on 2024/5/30.
+//  Created by 徐臻 on 2024/9/27.
 //
 
-#import "AnimationStyle1ViewController.h"
+#import "TestAnimation1ViewController.h"
 @import XZShapeView;
 
 #define kAnimationDuration 10.0
 
-@interface AnimationStyle1ViewController ()
+@interface TestAnimation1ViewController ()
 @property (weak, nonatomic) IBOutlet XZShapeView *shapeView;
 @end
 
-@implementation AnimationStyle1ViewController
+@implementation TestAnimation1ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -83,5 +83,6 @@
     an3.removedOnCompletion = NO;
     [_shapeLayer addAnimation:an3 forKey:@"refreshing.strokeColor"];
 }
+
 
 @end

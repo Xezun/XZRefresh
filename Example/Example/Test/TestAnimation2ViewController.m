@@ -1,20 +1,20 @@
 //
-//  AnimationStyle2ViewController.m
+//  TestAnimation2ViewController.m
 //  Example
 //
-//  Created by 徐臻 on 2024/5/30.
+//  Created by 徐臻 on 2024/9/27.
 //
 
-#import "AnimationStyle2ViewController.h"
+#import "TestAnimation2ViewController.h"
 @import XZShapeView;
 
 #define kAnimationDuration 20.0
 
-@interface AnimationStyle2ViewController ()
+@interface TestAnimation2ViewController ()
 @property (weak, nonatomic) IBOutlet XZShapeView *shapeView;
 @end
 
-@implementation AnimationStyle2ViewController
+@implementation TestAnimation2ViewController
 
 - (void)viewDidLoad {
     [super viewDidLoad];
@@ -66,3 +66,6 @@
 }
 
 @end
+
+
+

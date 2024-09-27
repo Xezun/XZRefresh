@@ -10,15 +10,16 @@
 #import "UIScrollView+XZRefresh.h"
 #import "XZRefreshDefines.h"
 
-
-#define AnimationCircle    6.0  // 动画一圈距离
-#define AnimationLength    84.0 // 动画总距离，该值x需满足：x 是 6 的倍数，且 (x - 6) 是 13 倍数
-#define AnimationMin       4.0  // 最小动画距离
-#define AnimationMax       9.0  // 最大动画距离 = 4.0 + 6.0 - 1.0 最大动画距离+最小动画距离 - 1.0
-#define AnimationDuration  21.0
-
 #define kTrackColor         [UIColor colorWithWhite:0.90 alpha:1.0]
 
+#define kAnimationCircles 6     // 总圈数，整数
+#define kAnimationDistOne 6.0   // 一圈距离
+#define kAnimationDistAll 36.0  // 总距离 = kAnimationCircles * kAnimationDistOne
+#define kAnimationDistMin 5.0   // 最小动画距离
+#define kAnimationDistMax 10.0  // 最大动画距离 = kAnimationDistMin + kAnimationDistOne - 1.0
+#define kAnimationValues1 @[@(0.0/36.0), @(10.0/36.0), @(15.0/36.0), @(25.0/36.0), @(30.0/36.0)]
+#define kAnimationValues2 @[@(5.8/36.0), @(11.0/36.0), @(20.8/36.0), @(26.0/36.0), @(35.8/36.0)]
+#define kAnimationDuration 6.0  // 总动画时常
 
 @implementation XZRefreshStyle1View {
     UIView *_view;
@@ -81,7 +82,7 @@
     
     UIBezierPath *path = [UIBezierPath bezierPath];
     [path moveToPoint:CGPointMake(15.0, 5.0)];
-    for (NSInteger i = 0; i < AnimationLength / AnimationCircle; i++) {
+    for (NSInteger i = 0; i < kAnimationCircles; i++) {
         [path addArcWithCenter:CGPointMake(15.0, 15.0) radius:10.0 startAngle:-M_PI_2 endAngle:M_PI * 1.5 clockwise:YES];
     }
     _shapeLayer.path = path.CGPath;
@@ -138,22 +139,21 @@
         if (transition < 0.5) {
             // 变大进场：圆弧开始增长，并从小变大
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = transition * AnimationCircle / AnimationLength;
+            _shapeLayer.strokeEnd   = transition * kAnimationDistOne / kAnimationDistAll;
             _trackLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
             _shapeLayer.transform   = CATransform3DMakeScale(transition * 2.0, transition * 2.0, 1.0);
         } else if (transition < 1.0) {
             // 蓄力刷新：圆弧增长 1.0，大小恢复正常。
             // 由于线端 cap 的原因，圆弧进度在略小于 1.0 的时候，显示效果就已经为闭合状态，
             // 因此减 0.2 以保证在进度未满时，圆弧必须处于未闭合状态，而用户看到闭合的圆环时，松手一定可以进入刷新状态。
-            CGFloat const circle = AnimationCircle / AnimationLength;
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = MIN(transition, 58.0/60.0) * circle;
+            _shapeLayer.strokeEnd   = MIN(transition, 58.0/60.0) * kAnimationDistOne / kAnimationDistAll;
             _trackLayer.transform   = CATransform3DIdentity;
             _shapeLayer.transform   = CATransform3DIdentity;
         } else {
             // 等待刷新
             _shapeLayer.strokeStart = 0;
-            _shapeLayer.strokeEnd   = AnimationCircle / AnimationLength;
+            _shapeLayer.strokeEnd   = kAnimationDistOne / kAnimationDistAll;
             _trackLayer.transform   = CATransform3DIdentity;
             _shapeLayer.transform   = CATransform3DIdentity;
         }
@@ -181,7 +181,7 @@
         [CATransaction begin];
         [CATransaction setDisableActions:YES];
         _shapeLayer.strokeStart = 0;
-        _shapeLayer.strokeEnd   = AnimationCircle / AnimationLength;
+        _shapeLayer.strokeEnd   = kAnimationDistOne / kAnimationDistAll;
         [CATransaction commit];
         
         // iOS 16.2: transform 的隐式动画时长不受控制，因此用了 CAAnimation 处理缩放效果。
@@ -200,34 +200,27 @@
     
     // 自定义个动画曲线，以实现运动速度平滑过渡。
     // 1、动画曲线斜率 y/x 即表示速度。
-    // 2、根据运动距离，最快速度为 AnimationMax，最慢速度为 AnimationMin。
-    // 距离=AnimationMin的动画，保持匀速；
-    // 距离=AnimationMax的动画，以最快速度的AnimationMin / AnimationMax缓入缓出
-    CGFloat const control = 0.5 * AnimationMin / AnimationMax;
-    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.5 :control :0.5 :(1.0 - control)];
+    // 2、根据运动距离，最快速度为 AnimationMax / t，最慢速度为 AnimationMin / t。
+    // 距离=AnimationMin的动画，匀速 x ；
+    // 距离=AnimationMax的动画，以 x 为小值缓入缓出，缓入过程0.2，缓出过程0.3
+    CGFloat const control = kAnimationDistMin / kAnimationDistMax;
+    CAMediaTimingFunction *easeio = [CAMediaTimingFunction functionWithControlPoints:0.1 :0.1 * control :0.9 :1.0 - 0.1 * control];
     CAMediaTimingFunction *linear = [CAMediaTimingFunction functionWithName:kCAMediaTimingFunctionLinear];
-    
-    CGFloat const N = AnimationLength;
-    CGFloat const X = 0.3;
     
     // strokeStart 快速时，收缩进度
     CAKeyframeAnimation *an1 = [CAKeyframeAnimation animationWithKeyPath:@"strokeStart"];
-    an1.values = @[
-        @(0/N), @(9.0/N), @(13.0/N), @(22.0/N), @(26.0/N), @(35.0/N), @(39.0/N), @(48.0/N), @(52.0/N), @(61.0/N), @(65.0/N), @(74.0/N), @(78.0/N)
-    ];
+    an1.values = kAnimationValues1;
     an1.timingFunctions = @[easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear];
     
     // strokeEnd 快速时，拉伸进度
     CAKeyframeAnimation *an2 = [CAKeyframeAnimation animationWithKeyPath:@"strokeEnd"];
-    an2.values = @[
-        @((6.0 - X)/N), @(10.0/N), @((19 - X)/N), @(23.0/N), @((32.0 - X)/N), @(36.0/N), @((45.0 - X)/N), @(49.0/N), @((58.0 - X)/N), @(62.0/N), @((71.0 - X)/N), @(75.0/N), @((84.0 - X)/N)
-    ];
+    an2.values = kAnimationValues2;
     an2.timingFunctions = @[linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio, linear, easeio];
     
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations  = @[an1, an2];
     group.beginTime   = beginTime;
-    group.duration    = AnimationDuration;
+    group.duration    = kAnimationDuration;
     group.repeatCount = FLT_MAX;
     group.removedOnCompletion = NO;
     [_shapeLayer addAnimation:group forKey:@"refreshing"];
@@ -282,3 +275,6 @@
 }
 
 @end
+
+
+
