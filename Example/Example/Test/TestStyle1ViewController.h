@@ -1,5 +1,5 @@
 //
-//  AnimationStyle1ViewController.h
+//  TestStyle1ViewController.h
 //  Example
 //
 //  Created by 徐臻 on 2024/5/30.
@@ -9,7 +9,7 @@
 
 NS_ASSUME_NONNULL_BEGIN
 
-@interface AnimationStyle1ViewController : UIViewController
+@interface TestStyle1ViewController : UIViewController
 
 @end
 

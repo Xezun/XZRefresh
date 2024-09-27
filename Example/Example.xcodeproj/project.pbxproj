@@ -8,8 +8,10 @@
 
 /* Begin PBXBuildFile section */
 		01C91114C6D30DAA909EB169 /* Pods_Example.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 055F0304DE9A092BAF52FF06 /* Pods_Example.framework */; };
-		2919F96F2C080D9800919EB2 /* AnimationStyle1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2919F96E2C080D9800919EB2 /* AnimationStyle1ViewController.m */; };
-		2919F9722C080DA700919EB2 /* AnimationStyle2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2919F9712C080DA700919EB2 /* AnimationStyle2ViewController.m */; };
+		04E637AE2CA66F4E00ED7BA2 /* TestAnimation1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E637AD2CA66F4E00ED7BA2 /* TestAnimation1ViewController.m */; };
+		04E637B12CA66F5B00ED7BA2 /* TestAnimation2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 04E637B02CA66F5B00ED7BA2 /* TestAnimation2ViewController.m */; };
+		2919F96F2C080D9800919EB2 /* TestStyle1ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2919F96E2C080D9800919EB2 /* TestStyle1ViewController.m */; };
+		2919F9722C080DA700919EB2 /* TestStyle2ViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 2919F9712C080DA700919EB2 /* TestStyle2ViewController.m */; };
 		292438E72A8C914C00AF55D8 /* NavigationController.m in Sources */ = {isa = PBXBuildFile; fileRef = 292438E62A8C914C00AF55D8 /* NavigationController.m */; };
 		29648BE52A72556C0090F445 /* AppDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29648BE42A72556C0090F445 /* AppDelegate.m */; };
 		29648BE82A72556C0090F445 /* SceneDelegate.m in Sources */ = {isa = PBXBuildFile; fileRef = 29648BE72A72556C0090F445 /* SceneDelegate.m */; };
@@ -21,9 +23,9 @@
 		29648C002A72556E0090F445 /* ExampleTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29648BFF2A72556E0090F445 /* ExampleTests.m */; };
 		29648C0A2A72556E0090F445 /* ExampleUITests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29648C092A72556E0090F445 /* ExampleUITests.m */; };
 		29648C0C2A72556E0090F445 /* ExampleUITestsLaunchTests.m in Sources */ = {isa = PBXBuildFile; fileRef = 29648C0B2A72556E0090F445 /* ExampleUITestsLaunchTests.m */; };
-		29BF7BB92A9F9CA4000DE5DE /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29BF7BB82A9F9CA4000DE5DE /* TestViewController.m */; };
+		29BF7BB92A9F9CA4000DE5DE /* TestScrollEventsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29BF7BB82A9F9CA4000DE5DE /* TestScrollEventsViewController.m */; };
 		29C243422BFC79B800089B66 /* ExampleRefreshSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C243412BFC79B800089B66 /* ExampleRefreshSettingsViewController.m */; };
-		29C3E0962A88C6400073E7C2 /* AnimationViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C3E0952A88C6400073E7C2 /* AnimationViewController.m */; };
+		29C3E0962A88C6400073E7C2 /* TestViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29C3E0952A88C6400073E7C2 /* TestViewController.m */; };
 		29EAD3C02A8BD00200563590 /* ExampleSettingsViewController.m in Sources */ = {isa = PBXBuildFile; fileRef = 29EAD3BF2A8BD00200563590 /* ExampleSettingsViewController.m */; };
 		C556594B20BE3573AE3127B1 /* Pods_ExampleUITests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 2921DE5FDDA8FC1A0BE46778 /* Pods_ExampleUITests.framework */; };
 		E1C58D6269A64FE5F22C16D7 /* Pods_ExampleTests.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = D09F7711B7EC5E200D1D4920 /* Pods_ExampleTests.framework */; };
@@ -47,11 +49,15 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		04E637AC2CA66F4E00ED7BA2 /* TestAnimation1ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestAnimation1ViewController.h; sourceTree = "<group>"; };
+		04E637AD2CA66F4E00ED7BA2 /* TestAnimation1ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestAnimation1ViewController.m; sourceTree = "<group>"; };
+		04E637AF2CA66F5B00ED7BA2 /* TestAnimation2ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestAnimation2ViewController.h; sourceTree = "<group>"; };
+		04E637B02CA66F5B00ED7BA2 /* TestAnimation2ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestAnimation2ViewController.m; sourceTree = "<group>"; };
 		055F0304DE9A092BAF52FF06 /* Pods_Example.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_Example.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		2919F96D2C080D9800919EB2 /* AnimationStyle1ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnimationStyle1ViewController.h; sourceTree = "<group>"; };
-		2919F96E2C080D9800919EB2 /* AnimationStyle1ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnimationStyle1ViewController.m; sourceTree = "<group>"; };
-		2919F9702C080DA700919EB2 /* AnimationStyle2ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnimationStyle2ViewController.h; sourceTree = "<group>"; };
-		2919F9712C080DA700919EB2 /* AnimationStyle2ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnimationStyle2ViewController.m; sourceTree = "<group>"; };
+		2919F96D2C080D9800919EB2 /* TestStyle1ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestStyle1ViewController.h; sourceTree = "<group>"; };
+		2919F96E2C080D9800919EB2 /* TestStyle1ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestStyle1ViewController.m; sourceTree = "<group>"; };
+		2919F9702C080DA700919EB2 /* TestStyle2ViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestStyle2ViewController.h; sourceTree = "<group>"; };
+		2919F9712C080DA700919EB2 /* TestStyle2ViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestStyle2ViewController.m; sourceTree = "<group>"; };
 		2921DE5FDDA8FC1A0BE46778 /* Pods_ExampleUITests.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Pods_ExampleUITests.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		292438E52A8C914C00AF55D8 /* NavigationController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = NavigationController.h; sourceTree = "<group>"; };
 		292438E62A8C914C00AF55D8 /* NavigationController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = NavigationController.m; sourceTree = "<group>"; };
@@ -72,12 +78,12 @@
 		29648C052A72556E0090F445 /* ExampleUITests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = ExampleUITests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		29648C092A72556E0090F445 /* ExampleUITests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleUITests.m; sourceTree = "<group>"; };
 		29648C0B2A72556E0090F445 /* ExampleUITestsLaunchTests.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleUITestsLaunchTests.m; sourceTree = "<group>"; };
-		29BF7BB72A9F9CA4000DE5DE /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
-		29BF7BB82A9F9CA4000DE5DE /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
+		29BF7BB72A9F9CA4000DE5DE /* TestScrollEventsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestScrollEventsViewController.h; sourceTree = "<group>"; };
+		29BF7BB82A9F9CA4000DE5DE /* TestScrollEventsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestScrollEventsViewController.m; sourceTree = "<group>"; };
 		29C243402BFC79B800089B66 /* ExampleRefreshSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleRefreshSettingsViewController.h; sourceTree = "<group>"; };
 		29C243412BFC79B800089B66 /* ExampleRefreshSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleRefreshSettingsViewController.m; sourceTree = "<group>"; };
-		29C3E0942A88C6400073E7C2 /* AnimationViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = AnimationViewController.h; sourceTree = "<group>"; };
-		29C3E0952A88C6400073E7C2 /* AnimationViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = AnimationViewController.m; sourceTree = "<group>"; };
+		29C3E0942A88C6400073E7C2 /* TestViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = TestViewController.h; sourceTree = "<group>"; };
+		29C3E0952A88C6400073E7C2 /* TestViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = TestViewController.m; sourceTree = "<group>"; };
 		29EAD3BE2A8BD00200563590 /* ExampleSettingsViewController.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = ExampleSettingsViewController.h; sourceTree = "<group>"; };
 		29EAD3BF2A8BD00200563590 /* ExampleSettingsViewController.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = ExampleSettingsViewController.m; sourceTree = "<group>"; };
 		369E27212BC7DC1424D69BB0 /* Pods-Example.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Example.release.xcconfig"; path = "Target Support Files/Pods-Example/Pods-Example.release.xcconfig"; sourceTree = "<group>"; };
@@ -117,24 +123,21 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
-		2919F96B2C073DBA00919EB2 /* Animation */ = {
+		2919F96B2C073DBA00919EB2 /* Test */ = {
 			isa = PBXGroup;
 			children = (
-				29C3E0942A88C6400073E7C2 /* AnimationViewController.h */,
-				29C3E0952A88C6400073E7C2 /* AnimationViewController.m */,
-				2919F96D2C080D9800919EB2 /* AnimationStyle1ViewController.h */,
-				2919F96E2C080D9800919EB2 /* AnimationStyle1ViewController.m */,
-				2919F9702C080DA700919EB2 /* AnimationStyle2ViewController.h */,
-				2919F9712C080DA700919EB2 /* AnimationStyle2ViewController.m */,
-			);
-			path = Animation;
-			sourceTree = "<group>";
-		};
-		2919F96C2C073E6100919EB2 /* Test */ = {
-			isa = PBXGroup;
-			children = (
-				29BF7BB72A9F9CA4000DE5DE /* TestViewController.h */,
-				29BF7BB82A9F9CA4000DE5DE /* TestViewController.m */,
+				29C3E0942A88C6400073E7C2 /* TestViewController.h */,
+				29C3E0952A88C6400073E7C2 /* TestViewController.m */,
+				2919F96D2C080D9800919EB2 /* TestStyle1ViewController.h */,
+				2919F96E2C080D9800919EB2 /* TestStyle1ViewController.m */,
+				2919F9702C080DA700919EB2 /* TestStyle2ViewController.h */,
+				2919F9712C080DA700919EB2 /* TestStyle2ViewController.m */,
+				04E637AC2CA66F4E00ED7BA2 /* TestAnimation1ViewController.h */,
+				04E637AD2CA66F4E00ED7BA2 /* TestAnimation1ViewController.m */,
+				04E637AF2CA66F5B00ED7BA2 /* TestAnimation2ViewController.h */,
+				04E637B02CA66F5B00ED7BA2 /* TestAnimation2ViewController.m */,
+				29BF7BB72A9F9CA4000DE5DE /* TestScrollEventsViewController.h */,
+				29BF7BB82A9F9CA4000DE5DE /* TestScrollEventsViewController.m */,
 			);
 			path = Test;
 			sourceTree = "<group>";
@@ -172,8 +175,7 @@
 				292438E62A8C914C00AF55D8 /* NavigationController.m */,
 				29648BEC2A72556C0090F445 /* Main.storyboard */,
 				29C243432BFC80BB00089B66 /* Example */,
-				2919F96B2C073DBA00919EB2 /* Animation */,
-				2919F96C2C073E6100919EB2 /* Test */,
+				2919F96B2C073DBA00919EB2 /* Test */,
 				29648BEF2A72556E0090F445 /* Assets.xcassets */,
 				29648BF12A72556E0090F445 /* LaunchScreen.storyboard */,
 				29648BF42A72556E0090F445 /* Info.plist */,
@@ -458,15 +460,17 @@
 			files = (
 				29648BEB2A72556C0090F445 /* ExampleViewController.m in Sources */,
 				29648BE52A72556C0090F445 /* AppDelegate.m in Sources */,
-				29C3E0962A88C6400073E7C2 /* AnimationViewController.m in Sources */,
-				29BF7BB92A9F9CA4000DE5DE /* TestViewController.m in Sources */,
+				29C3E0962A88C6400073E7C2 /* TestViewController.m in Sources */,
+				29BF7BB92A9F9CA4000DE5DE /* TestScrollEventsViewController.m in Sources */,
 				29EAD3C02A8BD00200563590 /* ExampleSettingsViewController.m in Sources */,
-				2919F9722C080DA700919EB2 /* AnimationStyle2ViewController.m in Sources */,
+				2919F9722C080DA700919EB2 /* TestStyle2ViewController.m in Sources */,
 				29648BF62A72556E0090F445 /* main.m in Sources */,
 				29C243422BFC79B800089B66 /* ExampleRefreshSettingsViewController.m in Sources */,
-				2919F96F2C080D9800919EB2 /* AnimationStyle1ViewController.m in Sources */,
+				2919F96F2C080D9800919EB2 /* TestStyle1ViewController.m in Sources */,
+				04E637AE2CA66F4E00ED7BA2 /* TestAnimation1ViewController.m in Sources */,
 				29648BE82A72556C0090F445 /* SceneDelegate.m in Sources */,
 				292438E72A8C914C00AF55D8 /* NavigationController.m in Sources */,
+				04E637B12CA66F5B00ED7BA2 /* TestAnimation2ViewController.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
