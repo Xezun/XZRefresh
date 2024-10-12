@@ -304,7 +304,7 @@ static void const * const _context = &_context;
     }
     _header.needsLayout = YES;
     __weak typeof(self) wself = self;
-    [NSRunLoop.mainRunLoop performBlock:^{
+    [NSRunLoop.mainRunLoop performInModes:@[NSRunLoopCommonModes] block:^{
         [wself layoutHeaderRefreshViewIfNeeded];
     }];
 }
@@ -315,14 +315,22 @@ static void const * const _context = &_context;
     }
     _footer.needsLayout = YES;
     __weak typeof(self) wself = self;
-    [NSRunLoop.mainRunLoop performBlock:^{
+    // 在 ScrollView 滚动时，模式 NSDefaultRunLoopMode 下的 runloop 会被阻塞，可能会导致 UI 长时间得不到更新。
+    [NSRunLoop.mainRunLoop performInModes:@[NSRunLoopCommonModes] block:^{
         [wself layoutFooterRefreshViewIfNeeded];
     }];
 }
 
 - (void)setNeedsLayoutRefreshViews {
-    [self setNeedsLayoutHeaderRefreshView];
-    [self setNeedsLayoutFooterRefreshView];
+    if (_header.needsLayout && _footer.needsLayout) {
+        return;
+    }
+    _header.needsLayout = YES;
+    _footer.needsLayout = YES;
+    __weak typeof(self) wself = self;
+    [NSRunLoop.mainRunLoop performInModes:@[NSRunLoopCommonModes] block:^{
+        [wself layoutRefreshViewsIfNeeded];
+    }];
 }
 
 - (void)layoutRefreshViewsIfNeeded {
