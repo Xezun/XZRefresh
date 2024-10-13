@@ -262,7 +262,7 @@ static void const * const _context = &_context;
     }
     UIScrollView *  const _scrollView = self->_scrollView;
     CGFloat         const y           = -_scrollView.adjustedContentInset.top - XZRefreshHeight;
-    XZRefreshView * const refreshView = [[XZRefreshStyle1View alloc] initWithFrame:CGRectMake(0, y, _scrollView.frame.size.width, XZRefreshHeight)];
+    XZRefreshView * const refreshView = [[XZRefreshView.defaultHeaderClass alloc] initWithFrame:CGRectMake(0, y, _scrollView.frame.size.width, XZRefreshHeight)];
     
     refreshView.refreshManager = self;
     _header.view = refreshView;
@@ -280,7 +280,7 @@ static void const * const _context = &_context;
     UIEdgeInsets    const insets = _scrollView.adjustedContentInset;
     CGRect          const bounds = _scrollView.bounds;
     CGFloat         const y      = MAX(_scrollView.contentSize.height, bounds.size.height - insets.top - insets.bottom) + insets.bottom;
-    XZRefreshView * const refreshView = [[XZRefreshStyle2View alloc] initWithFrame:CGRectMake(0, y, bounds.size.width, XZRefreshHeight)];
+    XZRefreshView * const refreshView = [[XZRefreshView.defaultFooterClass alloc] initWithFrame:CGRectMake(0, y, bounds.size.width, XZRefreshHeight)];
     
     refreshView.refreshManager = self;
     _footer.view = refreshView;
