@@ -19,7 +19,6 @@
 #define kAnimationDistMax 10.0  // 最大动画距离 = kAnimationDistMin + kAnimationDistOne - 1.0
 #define kAnimationValues1 @[@(0.0/36.0), @(10.0/36.0), @(15.0/36.0), @(25.0/36.0), @(30.0/36.0)]
 #define kAnimationValues2 @[@(5.8/36.0), @(11.0/36.0), @(20.8/36.0), @(26.0/36.0), @(35.8/36.0)]
-#define kAnimationDuration 6.0  // 总动画时常
 
 @implementation XZRefreshStyle1View {
     UIView *_view;
@@ -51,6 +50,8 @@
     CGFloat const x = CGRectGetMidX(bounds) - 15.0;
     CGFloat const y = CGRectGetMidY(bounds) - 15.0;
     CGRect  const frame = CGRectMake(x, y, 30.0, 30.0);
+    
+    _animationDuration = 1.5;
     
     _view = [[UIView alloc] initWithFrame:frame];
     _view.userInteractionEnabled = NO;
@@ -220,7 +221,7 @@
     CAAnimationGroup *group = [CAAnimationGroup animation];
     group.animations  = @[an1, an2];
     group.beginTime   = beginTime;
-    group.duration    = kAnimationDuration;
+    group.duration    = self.animationDuration * kAnimationCircles;
     group.repeatCount = FLT_MAX;
     group.removedOnCompletion = NO;
     [_shapeLayer addAnimation:group forKey:@"refreshing"];
